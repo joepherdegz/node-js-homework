@@ -18,7 +18,7 @@ const getContactById = async (_req, res) => {
     res.json(result);
 };
 
-const addCOntact = async (req, res) => {
+const addContact = async (req, res) => {
     const { error } = contactValidation.validate(req.body);
 
     if (error) {
@@ -30,4 +30,55 @@ const addCOntact = async (req, res) => {
     res.status(201).json(result);
 };
 
+const deleteContactById = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndDelete(contactId);
 
+  if (!result) {
+    throw httpError(404);
+  }
+
+  res.json({
+    message: "Contact deleted",
+  });
+};
+
+const updateContactById = async (req, res) => {
+  // Preventing lack of necessary data for contacts (check validations folder)
+  const { error } = contactValidation.validate(req.body);
+  if (error) {
+    throw httpError(400, "missing fields");
+  }
+
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!result) {
+    throw httpError(404);
+  }
+
+  res.json(result);
+};
+
+const updateStatusContact = async (req, res) => {
+  // Preventing lack of necessary data for favorite (check validations folder)
+  const { error } = favoriteValidation.validate(req.body);
+  if (error) {
+    throw httpError(400, "missing field favorite");
+  }
+
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!result) {
+    throw httpError(404);
+  }
+
+  res.json(result);
+};
+
+export { getAllContacts, getContactById, addContact, deleteContactById, updateContactById, updateStatusContact};
