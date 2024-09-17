@@ -7,8 +7,8 @@ const getAllContacts = async (_req, res) => {
     res.json(result);
 };
 
-const getContactById = async (_req, res) => {
-    const { ContactId } = req.params;
+const getContactById = async (req, res) => {
+    const { contactId } = req.params;
     const result = await Contact.findById(contactId);
 
     if (!result) {
