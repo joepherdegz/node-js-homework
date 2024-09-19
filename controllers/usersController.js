@@ -104,7 +104,7 @@ const updateUserSubscription = async (req, res) => {
 
     res.json({
         email: updateUserSubscription.email,
-        subscription: updateUser.subscription,
+        subscription: updatedUser.subscription,
     });
 };
 
