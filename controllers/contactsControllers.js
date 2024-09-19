@@ -1,5 +1,5 @@
 import { Contact } from "../models/contactsModel.js";
-import { contactValidation, favoriteValidation } from "../validations/validation.js";
+import { contactValidation, favoriteValidation } from "../validations/validations.js";
 import { httpError } from "../helpers/httpErrors.js";
 
 const getAllContacts = async (_req, res) => {
