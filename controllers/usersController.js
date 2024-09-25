@@ -122,25 +122,34 @@ const updateUserSubscription = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
-  const { _id } = req.user;
-  const { path: oldPath, originalname } = req.file;
+  try {
+    const { _id } = req.user;
+    const { path: oldPath, originalname } = req.file;
 
-  await Jimp.read(oldPath).then((image) =>
-    // image.resize(250, 250).write(oldPath)
-    image.cover(250, 250).write(oldPath)
-  );
+    await Jimp.read(oldPath)
+      .then((image) => {
+        // image.resize(250, 250).write(oldPath)
+        image.resize({ w: 250, h: 250 }).write(oldPath);
+      })
+      .catch((error) => console.log(error));
 
-  const extension = path.extname(originalname);
-  const filename = `${_id}${extension}`;
+    const extension = path.extname(originalname);
+    const filename = `${_id}${extension}`;
 
-  const newPath = path.join("public", "avatars", filename);
-  await fs.rename(oldPath, newPath);
+    const newPath = path.join("public", "avatars", filename);
+    await fs.rename(oldPath, newPath);
 
-  let avatarURL = path.join("/avatars", filename);
-  avatarURL = avatarURL.replace(/\\/g, "/");
+    let avatarURL = path.join("/avatars", filename);
+    avatarURL = avatarURL.replace(/\\/g, "/");
 
-  await User.findByIdAndUpdate(_id, { avatarURL });
-  res.status(200).json({ avatarURL });
+    await User.findByIdAndUpdate(_id, { avatarURL });
+
+    res.status(200).json({ avatarURL });
+  } catch (error) {
+    console.error("Error in updateAvatar:", error); // Debug log
+    res.status(500).json({ message: error.message });
+  }
+  
 };
 
 // prettier-ignore
